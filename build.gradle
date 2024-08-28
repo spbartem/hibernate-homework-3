@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.1'
+    id 'io.spring.dependency-management' version '1.1.5'
+}
+
+group = 'ru.productstar.jdbc'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation group: 'org.springframework', name: 'spring-context', version: '6.1.11'
+    implementation group: 'org.hibernate.orm', name: 'hibernate-core', version: '6.5.2.Final'
+
+    implementation group: 'jakarta.persistence', name: 'jakarta.persistence-api', version: '3.2.0'
+
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '3.3.2'
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '3.3.2'
+
+    implementation group: 'commons-dbcp', name: 'commons-dbcp', version: '1.4'
+    implementation group: 'org.postgresql', name: 'postgresql', version: '42.6.1'
+
+    testImplementation group: 'org.springframework', name: 'spring-test', version: '6.1.11'
+    testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.26.0'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.10.2'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.10.2'
+
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.13'
+    //testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: '2.0.13'
+    testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.5.6'
+}
+
+test {
+    useJUnitPlatform()
+}
