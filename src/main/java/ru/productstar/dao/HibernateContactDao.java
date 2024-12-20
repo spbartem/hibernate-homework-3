@@ -9,7 +9,7 @@ import ru.productstar.service.ContactService;
 import java.util.Collection;
 import java.util.List;
 
-public class HibernateContactDao {
+public class HibernateContactDao implements ContactDao {
 
     private final Logger logger = LoggerFactory.getLogger(ContactService.class);
     private final SessionFactory sessionFactory;

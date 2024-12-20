@@ -1,70 +1,42 @@
 package ru.productstar;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.productstar.config.ContactConfiguration;
-import ru.productstar.exception.EntityNotFoundException;
-import ru.productstar.model.Contact;
+import ru.productstar.dao.HibernateContactDao;
 import ru.productstar.service.ContactService;
+import ru.productstar.dao.entity.Contact;
 
 import java.nio.file.Path;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-/**
- * Unit tests for {@link NamedJdbcContactDao}.
- * <p>
- * Аннотация @Sql подтягивает SQL-скрипт contact.sql, который будет применен к базе перед выполнением теста.
- * Contact.sql создает таблицу CONTACT с полями (ID, NAME, SURNAME, EMAIL, PHONE_NUMBER) и вставляет в нее 2 записи.
- * <p>
- * Тесты проверяют корректность реализации ContactDao.
- */
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = ContactConfiguration.class)
-// @Sql("classpath:contact.sql")
-public record ContactDaoTests(@Autowired NamedJdbcContactDao contactDao,
+public record ContactDaoTests(@Autowired HibernateContactDao contactDao,
                               @Autowired ContactService contactService) {
 
-    private static final Contact IVAN = new Contact(
-            1000L, "Ivan", "Ivanov", "iivanov@gmail.com", "1234567"
-    );
-
-    private static final Contact MARIA = new Contact(
-            2000L, "Maria", "Ivanova", "mivanova@gmail.com", "7654321"
+    private static final Contact JACKIE = new Contact(
+            1L, "Jackie", "Chan", "jchan@gmail.com", "1234567890"
     );
 
     private static final Contact PETR = new Contact(
-            1L,"Пётр", "Петров", "ppetrov@gmail.com", "+70987654321"
+            2L,"Petr", "Petrov", "ppetrov@gmail.com", "+70987654321"
     );
 
     private static final Contact JOHN = new Contact(
-            2L, "Джон", "Смидт", "jsmith@gmail.com", "+11234567890"
+            3L, "John", "Smith", "jsmith@gmail.com", "+11234567890"
     );
 
     private static final Contact SEMION = new Contact(
-            3L,"Семён", "Семёнов", "ssemenov@gmail.com", "+71234567890"
+            4L,"Semion", "Cowl", "ssemenov@gmail.com", "+71234567890"
     );
 
-    private static final Contact NOT_FOUND = new Contact(
-            1L, "Not found", "Not found", "Not found", "Not found");
-
-    /**
-     * There are two contacts inserted in the database in contact.sql.
-     * There are three contacts inserted in the database from contacts.csv.
-     */
-    private static final List<Contact> PERSISTED_CONTACTS = List.of(PETR, JOHN, SEMION);
-
-    @BeforeEach
-    void setUp() {
-        contactDao.deleteAllContacts();
-        contactDao.setInitialValueForSequence("contact_id_seq", 1);
-    }
+    private static final List<Contact> PERSISTED_CONTACTS = List.of(JACKIE, PETR, JOHN, SEMION);
 
     @Test
     void saveContacts() {
@@ -76,7 +48,7 @@ public record ContactDaoTests(@Autowired NamedJdbcContactDao contactDao,
     @Test
     void addContact() {
         var contact = new Contact("Jackie", "Chan", "jchan@gmail.com", "1234567890");
-        var contactId = contactDao.saveContact(contact);
+        var contactId = contactDao.addContact(contact);
         contact.setId(contactId);
 
         var contactInDb = contactDao.getContact(contactId);
@@ -102,7 +74,7 @@ public record ContactDaoTests(@Autowired NamedJdbcContactDao contactDao,
     @Test
     void updatePhoneNumber() {
         var contact = new Contact("Jekyll", "Hide", "jhide@gmail.com", "");
-        var contactId = contactDao.saveContact(contact);
+        var contactId = contactDao.addContact(contact);
 
         var newPhone = "777-77-77";
         contactDao.updatePhoneNumber(contactId, newPhone);
@@ -114,7 +86,7 @@ public record ContactDaoTests(@Autowired NamedJdbcContactDao contactDao,
     @Test
     void updateEmail() {
         var contact = new Contact("Captain", "America", "", "");
-        var contactId = contactDao.saveContact(contact);
+        var contactId = contactDao.addContact(contact);
 
         var newEmail = "cap@gmail.com";
         contactDao.updateEmail(contactId, newEmail);
@@ -124,16 +96,13 @@ public record ContactDaoTests(@Autowired NamedJdbcContactDao contactDao,
     }
 
     @Test
-    void deleteContact() throws EntityNotFoundException {
+    void deleteContact() {
         var contact = new Contact("To be", "Deleted", "", "");
-        var contactId = contactDao.saveContact(contact);
+        var contactId = contactDao.addContact(contact);
 
         contactDao.deleteContact(contactId);
 
         var deletedContact = contactDao.getContact(contactId);
-        assertThat(deletedContact).isEqualTo(NOT_FOUND);
-
-//        assertThatThrownBy(() -> contactDao.getContact(contactId))
-//                .isInstanceOf(EmptyResultDataAccessException.class);
+        assertThat(deletedContact).isEqualTo(null);
     }
 }
