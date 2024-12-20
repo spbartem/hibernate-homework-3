@@ -20,6 +20,8 @@
         <appender-ref ref="FILE-ROLLING"/>
     </logger>
 
+    <logger name="org.hibernate" level="ERROR" />
+
     <root level="info">
         <appender-ref ref="FILE-ROLLING" />
     </root>

@@ -27,7 +27,7 @@ public class ContactService {
         logger.info("Importing contacts from {}", filePath);
         var contacts = contactReader.readFromFile(filePath);
         logger.info("Contacts has been imported successfully, count: {}", contacts.size());
-        //contactDao.saveAllContacts(contacts);
+        contactDao.saveAll(contacts);
     }
 
     public List<Contact> getContacts() {

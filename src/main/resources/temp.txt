@@ -1,0 +1,15 @@
+docker run --name habr-pg-13.3 -p 5432:5432 -e POSTGRES_USER=psuser -e POSTGRES_PASSWORD=pspassword -e POSTGRES_DB=productstar_db -d postgres:13.3
+
+create table "Contact"
+(
+    id           serial
+        constraint contact_pk
+            primary key,
+    name         varchar not null,
+    surname      varchar not null,
+    email        varchar not null,
+    phone_number varchar not null
+);
+
+alter table "Contact"
+    owner to psuser;

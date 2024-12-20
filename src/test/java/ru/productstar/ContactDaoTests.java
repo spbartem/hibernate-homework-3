@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import ru.productstar.config.ContactConfiguration;
 import ru.productstar.exception.EntityNotFoundException;
 import ru.productstar.model.Contact;
 import ru.productstar.service.ContactService;
